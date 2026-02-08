@@ -16,5 +16,11 @@ export const ProjectRepository = {
 
     async listByUser(userId: string){
         return await projectModel.find({ ownerId: userId });
-    }
+    },
+
+    async delete(projectId: string){
+        return await projectModel.findByIdAndDelete(projectId);
+    },
+
+
 }

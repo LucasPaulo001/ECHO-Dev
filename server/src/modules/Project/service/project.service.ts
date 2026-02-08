@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { DTOProjectPublishe, DTOProjectUpdate } from "../../../shared/dto/project.dto";
 import { UserRepository } from "../../User/user.repository";
 import { ProjectRepository } from "../project.repository";
+import { EchoRepository } from "../../Echo/echo.repository";
 
 export async function PublishProjectService(userId: string, data: DTOProjectPublishe){
 
@@ -89,6 +90,21 @@ export async function ListProjectByUserService(userId: string){
     }));
 
     return data;
+}
+
+export async function DeleteProjectService(projectId: string){
+    
+    const project = await ProjectRepository.findById(projectId);
+
+    if(!project) throw new Error("Projeto não encontrado.");
+
+    await EchoRepository.deleteEchoByProject(projectId);
+
+    await ProjectRepository.delete(projectId);
+
+    return {
+        msg: "Projeto deletado com sucesso."
+    }
 
 }
 
