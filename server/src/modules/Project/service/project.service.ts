@@ -69,3 +69,26 @@ export async function EditProjectDataService(projectId: string, data: DTOProject
         newProject
     }
 }
+
+
+export async function ListProjectByUserService(userId: string){
+    
+    const user = await UserRepository.findById(userId);
+
+    if(!user) throw new Error("Usuário não encontrado.");
+
+    const projects = await ProjectRepository.listByUser(userId);
+
+    const data = projects.map((project) => ({
+        id: project._id,
+        title: project.title,
+        description: project.description,
+        status: project.status,
+        isPublic: project.isPublic,
+        tags: project.tags
+    }));
+
+    return data;
+
+}
+

@@ -12,5 +12,9 @@ export const ProjectRepository = {
 
     async update(projectId: string, data: Partial<DTOProjectUpdate>){
         return await projectModel.findByIdAndUpdate(projectId, data, { new: true });
+    },
+
+    async listByUser(userId: string){
+        return await projectModel.find({ ownerId: userId });
     }
 }

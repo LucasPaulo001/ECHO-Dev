@@ -1,6 +1,7 @@
 import { Response } from "express";
 import { CustomRequest } from "../../middlewares/authGuard";
-import { EditProjectDataService, PublishProjectService } from "./service/project.service";
+import { EditProjectDataService, ListProjectByUserService, PublishProjectService } from "./service/project.service";
+import { ListEchoByProjectService } from "../Echo/service/echo.service";
 
 export async function PublishProjectController(req: CustomRequest, res: Response){
     try{
@@ -30,6 +31,25 @@ export async function EditProjectDataController(req: CustomRequest, res: Respons
         const result = await EditProjectDataService(projectId, data);
 
         res.status(201).json(result);
+    }
+    catch(error: any){
+        console.log(error);
+        res.status(500).json({
+            error: "Erro interno do servidor",
+            err: error.message
+        })
+    }
+}
+
+export async function ListProjectByUserController(req: CustomRequest, res: Response){
+    try{
+
+        const userId = req.user._id;
+
+        const result = await ListProjectByUserService(userId);
+
+        res.status(201).json(result);
+
     }
     catch(error: any){
         console.log(error);
