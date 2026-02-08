@@ -7,5 +7,6 @@ export type TProject = {
     status: "completed" | "peending",
     tags: string[],
     ownerId: Types.ObjectId,
-    isPublic: boolean
+    isPublic: boolean,
+    link: string
 }

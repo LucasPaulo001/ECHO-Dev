@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-import { DTOEchoCreate } from "../../../shared/dto/echo.dto";
+import { DTOEchoCreate, DTOEchoUpdate } from "../../../shared/dto/echo.dto";
 import { UserRepository } from "../../User/user.repository";
 import { EchoRepository } from "../echo.repository";
 import { ProjectRepository } from "../../Project/project.repository";
@@ -47,5 +47,44 @@ export async function ListEchoByProjectService(projectId: string){
     }));
 
     return dataEcho;
+}
+
+export async function DeleteEchoService(echoId: string){
+
+    const echo = await EchoRepository.findById(echoId);
+
+    if(!echo) throw new Error("Echo não encontrado.");
+
+    const echoDeleted = await EchoRepository.delete(echoId);
+
+    return {
+        msg: "Echo deletado com sucesso.",
+        echoDeleted
+    }
 
 }
+
+export async function EditEchoService(echoId: string, data: DTOEchoUpdate) {
+    
+    const echo = await EchoRepository.findById(echoId);
+
+    if(!echo) throw new Error("Echo não encontrado.");
+
+    const updates: Partial<DTOEchoUpdate> = {};
+
+    if(data.title && data.title != echo.title){
+        updates.title = data.title;
+    }
+
+    if(data.content && data.content != echo.content){
+        updates.content = data.content;
+    }
+
+    const newEcho = await EchoRepository.update(echoId, data);
+
+    return {
+        msg: "Echo editado com sucesso.",
+        newEcho
+    }
+}
+

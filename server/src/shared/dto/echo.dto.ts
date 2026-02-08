@@ -7,3 +7,8 @@ export type DTOEchoCreate = {
   title: string;
   content: string;
 };
+
+export type DTOEchoUpdate = {
+  title?: string;
+  content?: string;
+};

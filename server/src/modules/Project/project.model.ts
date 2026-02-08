@@ -27,6 +27,10 @@ const ProjectSchema = new Schema<TProject>({
         default: true
     },
 
+    link: {
+        type: String,
+    },
+
     tags: [{
         type: String
     }]

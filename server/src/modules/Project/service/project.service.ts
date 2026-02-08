@@ -18,6 +18,7 @@ export async function PublishProjectService(userId: string, data: DTOProjectPubl
         status: data.status,
         isPublic: data.isPublic,
         ownerId: userToObjectId,
+        link: data.link,
         tags: data.tags
     }
 
@@ -55,6 +56,10 @@ export async function EditProjectDataService(projectId: string, data: DTOProject
 
     if(data.status && data.status !== project.status){
         updates.status = data.status;
+    }
+
+    if(data.link && data.link !== project.link){
+        updates.link = data.link;
     }
 
     if(Object.keys(updates).length === 0){
