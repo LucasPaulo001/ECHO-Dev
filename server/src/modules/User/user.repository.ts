@@ -1,4 +1,4 @@
-import { DTOCreateUser } from "../../shared/dto/user.dto";
+import { DTOCreateUser, DTOUpdateUser } from "../../shared/dto/user.dto";
 import userModel from "./user.model";
 
 export const UserRepository = {
@@ -17,6 +17,10 @@ export const UserRepository = {
 
     async create(data: DTOCreateUser){
         return await userModel.create(data);
+    },
+
+    async update(userId: string, data: Partial<DTOUpdateUser>){
+        return await userModel.findByIdAndUpdate(userId, data, { new: true });
     }
 
 }

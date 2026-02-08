@@ -4,3 +4,8 @@ export type DTOCreateUser = {
     email: string;
     password: string;
 }
+
+export type DTOUpdateUser = {
+    name?: string;
+    userName?: string;
+}
