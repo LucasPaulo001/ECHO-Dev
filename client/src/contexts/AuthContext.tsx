@@ -1,11 +1,25 @@
+"use client"
+
 import { LoginAPI, RegisterAPI } from "@/api/auth";
+import { ProfileAPI } from "@/api/user";
 import React, { createContext, useState, useEffect, useContext } from "react";
+
+export interface TUser {
+  id: string;
+  name: string;
+  userName: string;
+  role: string;
+  stack: string;
+}
+
 
 interface ContextProps {
   Login: (email: string, senha: string) => Promise<void>;
   token: string | null;
   Register: (name: string, userName: string, email: string, password: string) => Promise<void>;
   loading: boolean;
+  Profile: (token: string) => Promise<TUser | null>;
+  user: TUser | null;
 }
 
 const AuthContext = createContext<ContextProps | undefined>(undefined);
@@ -13,6 +27,7 @@ const AuthContext = createContext<ContextProps | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [user, setUser] = useState<TUser | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem("tokenEchoDev");
@@ -20,6 +35,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(token);
     }
   }, []);
+
+  useEffect(() => {
+    if (token) Profile(token);
+  }, [token]);
 
   // Login
   const Login = async (email: string, password: string) => {
@@ -31,15 +50,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       setToken(data.token);
     } catch (err: any) {
-        console.log(err);
+      console.log(err);
     }
-    finally{
-        setLoading(false);
+    finally {
+      setLoading(false);
     }
   };
 
- // Registro
- const Register = async (name: string, userName: string, email: string, password: string) => {
+  // Registro
+  const Register = async (name: string, userName: string, email: string, password: string) => {
     setLoading(true);
     try {
       const data = await RegisterAPI(name, userName, email, password);
@@ -47,18 +66,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(data);
 
     } catch (err: any) {
-        console.log(err);
+      console.log(err);
     }
-    finally{
-        setLoading(false);
+    finally {
+      setLoading(false);
     }
- }
+  }
+
+  // Perfil
+  const Profile = async (token: string) => {
+    setLoading(true);
+    try {
+
+      const data = await ProfileAPI(token);
+
+      console.log(data);
+
+      setUser(data);
+
+      return data;
+
+    }
+    finally {
+      setLoading(false);
+    }
+  }
 
   const ListValues = {
     Login,
     token,
     Register,
-    loading
+    loading,
+    Profile,
+    user
   };
 
   return (
