@@ -1,15 +1,17 @@
+"use client"
+
 import { LoginAPI, RegisterAPI } from "@/api/auth";
 import { ProfileAPI } from "@/api/user";
 import React, { createContext, useState, useEffect, useContext } from "react";
 
-type TUser = {
+export interface TUser {
   id: string;
   name: string;
   userName: string;
-  email: string;
   role: string;
   stack: string;
-};
+}
+
 
 interface ContextProps {
   Login: (email: string, senha: string) => Promise<void>;
@@ -40,9 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    if (token) {
-      Profile(token);
-    }
+    if (token) Profile(token);
   }, [token]);
 
   // Login
@@ -56,18 +56,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setToken(data.token);
     } catch (err: any) {
       console.log(err);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
   };
 
   // Registro
-  const Register = async (
-    name: string,
-    userName: string,
-    email: string,
-    password: string,
-  ) => {
+  const Register = async (name: string, userName: string, email: string, password: string) => {
     setLoading(true);
     try {
       const data = await RegisterAPI(name, userName, email, password);
@@ -75,29 +71,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       console.log(data);
     } catch (err: any) {
       console.log(err);
-    } finally {
+    }
+    finally {
       setLoading(false);
     }
-  };
+  }
 
-  //  Perfil
-  const Profile = async (token: string | null) => {
+  // Perfil
+  const Profile = async (token: string) => {
     setLoading(true);
     try {
-      if (!token) return null;
+
       const data = await ProfileAPI(token);
 
-      console.log(data)
+      console.log(data);
 
       setUser(data);
 
       return data;
-    } catch (err: any) {
-      console.log(err);
-    } finally {
+
+    }
+    finally {
       setLoading(false);
     }
-  };
+  }
 
   const ListValues = {
     Login,
@@ -105,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     Register,
     loading,
     Profile,
-    user,
+    user
   };
 
   return (
